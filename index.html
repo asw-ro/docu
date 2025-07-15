@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirect...</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+      }
+
+      .spinner-container {
+        text-align: center;
+      }
+
+      .spinner {
+        margin: 0 auto 20px;
+        width: 50px;
+        height: 50px;
+        border: 6px solid #ccc;
+        border-top: 6px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .message {
+        font-size: 1.2rem;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <div class="message">Te redirecționez acum...</div>
+    </div>
+
+    <!-- Optional auto redirect -->
+    <!-- <script>
+    setTimeout(() => {
+      window.location.href = "https://exemplu.ro";
+    }, 3000);
+  </script> -->
+  </body>
+</html>
