@@ -51,6 +51,27 @@
       <div class="message">Te redirecționez acum...</div>
     </div>
 
-    <script src="redirect-links.js"></script>
+    <script>
+      // Fetch redirect info from remote API and redirect
+      fetch(
+        "https://asis.asw.ro/asisservice/linkuri?codlink=docu&reponsetype=json"
+      )
+        .then((response) => {
+          if (!response.ok) throw new Error("Network response was not ok");
+          return response.json();
+        })
+        .then((data) => {
+          if (data && data.urlcomplet) {
+            window.location.href = data.urlcomplet;
+          } else {
+            document.querySelector(".message").textContent =
+              "Eroare: linkul nu a fost găsit.";
+          }
+        })
+        .catch((error) => {
+          document.querySelector(".message").textContent =
+            "Eroare la redirecționare.";
+        });
+    </script>
   </body>
 </html>
