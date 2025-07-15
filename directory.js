@@ -85,7 +85,7 @@ function renderDirectory(data, filter = "") {
         this.innerHTML = '<span class="material-icons" style="font-size:1.1em;">check</span> Copiat!';
         this.disabled = true;
         setTimeout(() => {
-          this.innerHTML = '<span class="material-icons" style="font-size:1.1em;">content_copy</span> Copiază link';
+          this.innerHTML = '<span class="material-icons" style="font-size:1.1em;">content_copy</span> Copiază';
           this.disabled = false;
         }, 1200);
       });
