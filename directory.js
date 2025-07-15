@@ -1,14 +1,56 @@
 let allCardsData = [];
+let allTags = [];
+let activeTag = null;
+
+function renderTagFilters(tags) {
+  const tagFilters = document.getElementById("tagFilters");
+  tagFilters.innerHTML = "";
+  const allBtn = document.createElement("button");
+  allBtn.className = "tag-filter" + (activeTag === null ? " active" : "");
+  allBtn.textContent = "Toate";
+  allBtn.onclick = () => {
+    activeTag = null;
+    renderTagFilters(tags);
+    renderDirectory(allCardsData, document.getElementById("searchBar").value);
+  };
+  tagFilters.appendChild(allBtn);
+  tags.forEach((tag) => {
+    const btn = document.createElement("button");
+    btn.className = "tag-filter" + (activeTag === tag ? " active" : "");
+    btn.textContent = tag.startsWith("#") ? tag : "#" + tag;
+    btn.onclick = () => {
+      activeTag = tag;
+      renderTagFilters(tags);
+      renderDirectory(allCardsData, document.getElementById("searchBar").value);
+    };
+    tagFilters.appendChild(btn);
+  });
+}
+
 function renderDirectory(data, filter = "") {
   const dir = document.getElementById("directory");
   dir.innerHTML = "";
   data.forEach((item) => {
+    // Parse tags from item.etichete (comma or semicolon separated, or array)
+    let tags = [];
+    if (Array.isArray(item.etichete)) {
+      tags = item.etichete;
+    } else if (typeof item.etichete === "string") {
+      tags = item.etichete
+        .split(/[,;]+/)
+        .map((t) => t.trim())
+        .filter(Boolean);
+    }
+    // Tag filter logic
+    if (activeTag && !tags.includes(activeTag)) return;
     const searchText = (
       item.numescurt +
       " " +
       (item.descriere || "") +
       " " +
-      (item.urlcomplet || "")
+      (item.urlcomplet || "") +
+      " " +
+      tags.join(" ")
     ).toLowerCase();
     if (filter && !searchText.includes(filter.toLowerCase())) return;
     const card = document.createElement("div");
@@ -20,6 +62,16 @@ function renderDirectory(data, filter = "") {
       }" target="_blank" rel="noopener">
         ${item.numescurt}
       </a>
+      <div class="tags">
+        ${tags
+          .map(
+            (tag) =>
+              `<span class="tag">${
+                tag.startsWith("#") ? tag : "#" + tag
+              }</span>`
+          )
+          .join("")}
+      </div>
       <div class="desc">${item.descriere || ""}</div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:auto;">
         <a class="open-link" href="${
@@ -58,6 +110,22 @@ fetch("https://asis.asw.ro/asisservice/linkuri?codlink=docu&reponsetype=json")
   .then((r) => r.json())
   .then((data) => {
     allCardsData = data;
+    // Collect unique tags from all cards
+    const tagSet = new Set();
+    data.forEach((item) => {
+      let tags = [];
+      if (Array.isArray(item.etichete)) {
+        tags = item.etichete;
+      } else if (typeof item.etichete === "string") {
+        tags = item.etichete
+          .split(/[,;]+/)
+          .map((t) => t.trim())
+          .filter(Boolean);
+      }
+      tags.forEach((tag) => tagSet.add(tag));
+    });
+    allTags = Array.from(tagSet).sort();
+    renderTagFilters(allTags);
     renderDirectory(allCardsData);
     // Attach search event
     const searchBar = document.getElementById("searchBar");
