@@ -14,7 +14,7 @@ function renderTagFilters(tags) {
     renderDirectory(allCardsData, document.getElementById("searchBar").value);
   };
   tagFilters.appendChild(allBtn);
-  tags.forEach((tag) => {
+  tags.forEach(tag => {
     const btn = document.createElement("button");
     btn.className = "tag-filter" + (activeTag === tag ? " active" : "");
     btn.textContent = tag.startsWith("#") ? tag : "#" + tag;
@@ -30,7 +30,7 @@ function renderTagFilters(tags) {
 function renderDirectory(data, filter = "") {
   const dir = document.getElementById("directory");
   dir.innerHTML = "";
-  data.forEach((item) => {
+  data.forEach(item => {
     // Parse tags from item.etichete (comma or semicolon separated, or array)
     let tags = [];
     if (Array.isArray(item.etichete)) {
@@ -38,7 +38,7 @@ function renderDirectory(data, filter = "") {
     } else if (typeof item.etichete === "string") {
       tags = item.etichete
         .split(/[,;]+/)
-        .map((t) => t.trim())
+        .map(t => t.trim())
         .filter(Boolean);
     }
     // Tag filter logic
@@ -57,26 +57,15 @@ function renderDirectory(data, filter = "") {
     card.className = "card";
     card.innerHTML = `
       <span class="material-icons icon">${item.icoana || "link"}</span>
-      <a class="link-title" href="${
-        item.urlcomplet
-      }" target="_blank" rel="noopener">
+      <a class="link-title" href="${item.urlcomplet}" target="_blank" rel="noopener">
         ${item.numescurt}
       </a>
       <div class="tags">
-        ${tags
-          .map(
-            (tag) =>
-              `<span class="tag">${
-                tag.startsWith("#") ? tag : "#" + tag
-              }</span>`
-          )
-          .join("")}
+        ${tags.map(tag => `<span class="tag">${tag.startsWith("#") ? tag : "#" + tag}</span>`).join("")}
       </div>
       <div class="desc">${item.descriere || ""}</div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:auto;">
-        <a class="open-link" href="${
-          item.urlcomplet
-        }" target="_blank" rel="noopener">
+        <a class="open-link" href="${item.urlcomplet}" target="_blank" rel="noopener">
           <span class="material-icons" style="font-size:1.1em;">open_in_new</span> Deschide
         </a>
         <button class="open-link copy-link" data-link="https://docu.asiserp.ro/${
@@ -89,16 +78,14 @@ function renderDirectory(data, filter = "") {
     dir.appendChild(card);
   });
   // Add copy event listeners
-  document.querySelectorAll(".copy-link").forEach((btn) => {
+  document.querySelectorAll(".copy-link").forEach(btn => {
     btn.addEventListener("click", function () {
       const link = this.getAttribute("data-link");
       navigator.clipboard.writeText(link).then(() => {
-        this.innerHTML =
-          '<span class="material-icons" style="font-size:1.1em;">check</span> Copiat!';
+        this.innerHTML = '<span class="material-icons" style="font-size:1.1em;">check</span> Copiat!';
         this.disabled = true;
         setTimeout(() => {
-          this.innerHTML =
-            '<span class="material-icons" style="font-size:1.1em;">content_copy</span> Copiază link';
+          this.innerHTML = '<span class="material-icons" style="font-size:1.1em;">content_copy</span> Copiază link';
           this.disabled = false;
         }, 1200);
       });
@@ -107,22 +94,22 @@ function renderDirectory(data, filter = "") {
 }
 
 fetch("https://asis.asw.ro/asisservice/linkuri?codlink=docu&reponsetype=json")
-  .then((r) => r.json())
-  .then((data) => {
+  .then(r => r.json())
+  .then(data => {
     allCardsData = data;
     // Collect unique tags from all cards
     const tagSet = new Set();
-    data.forEach((item) => {
+    data.forEach(item => {
       let tags = [];
       if (Array.isArray(item.etichete)) {
         tags = item.etichete;
       } else if (typeof item.etichete === "string") {
         tags = item.etichete
           .split(/[,;]+/)
-          .map((t) => t.trim())
+          .map(t => t.trim())
           .filter(Boolean);
       }
-      tags.forEach((tag) => tagSet.add(tag));
+      tags.forEach(tag => tagSet.add(tag));
     });
     allTags = Array.from(tagSet).sort();
     renderTagFilters(allTags);

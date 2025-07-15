@@ -4,230 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ASiSdocu</title>
-    <link
-      rel="icon"
-      type="image/png"
-      href="/assets/favicon-96x96.png"
-      sizes="96x96"
-    />
+    <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="shortcut icon" href="/assets/favicon.ico" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/assets/apple-touch-icon.png"
-    />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="ASiSdocu" />
     <link rel="manifest" href="/assets/site.webmanifest" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <meta property="og:title" content="ASiSdocu" />
-    <meta
-      property="og:description"
-      content="Documentație & Linkuri utile ASiSerp"
-    />
+    <meta property="og:description" content="Documentație & Linkuri utile ASiSerp" />
     <meta property="og:image" content="/assets/thumbnail.png" />
     <meta property="og:url" content="https://docu.asiserp.ro/" />
     <meta property="og:type" content="website" />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        background: #f9f9f9;
-        font-family: "Roboto", Arial, sans-serif;
-        color: #222;
-      }
-      .tag-filters {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 18px;
-      }
-      .tag-filter {
-        background: #e3e8ee;
-        color: #1976d2;
-        font-size: 0.95em;
-        border-radius: 16px;
-        padding: 4px 16px;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-        transition: background 0.15s, color 0.15s;
-        outline: none;
-      }
-      .tag-filter.active,
-      .tag-filter:active {
-        background: #1976d2;
-        color: #fff;
-      }
-      .container {
-        max-width: 1200px;
-        margin: 40px auto;
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
-        padding: 24px 12px 12px 12px;
-      }
-      h1 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-        color: #1976d2;
-        letter-spacing: -1px;
-      }
-      .subtitle {
-        color: #555;
-        font-size: 1.1rem;
-        margin-bottom: 32px;
-      }
-      .directory {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
-      }
-      .card {
-        background: #f5f7fa;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        padding: 14px 12px 12px 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        transition: box-shadow 0.2s;
-        border: 1px solid #e3e8ee;
-        min-width: 0;
-      }
-      .card:hover {
-        box-shadow: 0 6px 24px rgba(25, 118, 210, 0.1);
-        border-color: #b6d4fa;
-      }
-      .icon {
-        font-size: 1.7rem;
-        color: #1976d2;
-        margin-bottom: 6px;
-      }
-      .link-title {
-        font-size: 1.05rem;
-        font-weight: 500;
-        margin-bottom: 4px;
-        color: #1976d2;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        word-break: break-all;
-      }
-      .desc {
-        color: #444;
-        font-size: 0.93rem;
-        margin-bottom: 8px;
-      }
-      .tags {
-        display: flex;
-        gap: 7px;
-        margin-bottom: 8px;
-        flex-wrap: wrap;
-      }
-      .tag {
-        background: #e3e8ee;
-        color: #1976d2;
-        font-size: 0.85em;
-        border-radius: 12px;
-        padding: 2px 10px;
-        font-weight: 500;
-        letter-spacing: 0.02em;
-        border: none;
-        display: inline-block;
-      }
-      .open-link {
-        margin-top: auto;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        color: #fff;
-        background: #1976d2;
-        border: none;
-        border-radius: 6px;
-        padding: 5px 10px;
-        font-size: 0.97rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: background 0.18s;
-        box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
-        cursor: pointer;
-      }
-      .open-link:hover {
-        background: #1565c0;
-      }
-      @media (max-width: 900px) {
-        .container {
-          padding: 8px 1vw;
-        }
-        .directory {
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        }
-      }
-      @media (max-width: 600px) {
-        .container {
-          padding: 6px 1vw;
-        }
-        .directory {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
+    <link href="style.css" rel="stylesheet" />
   </head>
   <body>
     <div class="container">
-      <h1>Documentație & Linkuri utile</h1>
-      <div class="subtitle">
-        Centralizator tehnic pentru acces rapid la resurse, documentații și
-        linkuri importante.
+      <div class="header-wrapper">
+        <div class="header-titles">
+          <h1>Documentație & Linkuri utile</h1>
+          <div class="subtitle">Centralizator tehnic pentru acces rapid la resurse, documentații și linkuri importante.</div>
+        </div>
+        <img src="/assets/asw.png" alt="ASW Logo" class="asw-logo" />
       </div>
-      <div
-        style="display: flex; justify-content: flex-end; margin-bottom: 18px"
-      >
-        <div style="position: relative; width: 100%">
-          <span
-            class="material-icons"
-            style="
-              position: absolute;
-              left: 10px;
-              top: 50%;
-              transform: translateY(-50%);
-              color: #1976d2;
-              font-size: 1.2em;
-            "
-            >search</span
-          >
-          <input
-            id="searchBar"
-            type="text"
-            placeholder="Caută..."
-            style="
-              width: 100%;
-              padding: 8px 8px 8px 36px;
-              border-radius: 6px;
-              border: 1px solid #b6d4fa;
-              font-size: 1rem;
-              outline: none;
-              box-sizing: border-box;
-            "
-          />
+      <div class="search-container">
+        <div class="search-wrapper">
+          <span class="material-icons">search</span>
+          <input id="searchBar" type="text" placeholder="Caută..." class="search-bar" />
         </div>
       </div>
-      <div
-        id="tagFilters"
-        class="tag-filters"
-        style="margin-bottom: 18px; display: flex; gap: 8px; flex-wrap: wrap"
-      ></div>
+      <div id="tagFilters" class="tag-filters"></div>
       <div id="directory" class="directory">
         <!-- Cards will be injected here -->
       </div>
