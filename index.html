@@ -4,51 +4,134 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Redirect...</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <style>
       body {
         margin: 0;
         padding: 0;
-        height: 100vh;
+        min-height: 100vh;
+        background: #f9f9f9;
+        font-family: "Roboto", Arial, sans-serif;
+        color: #222;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+        padding: 24px 12px 12px 12px;
+      }
+      h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #1976d2;
+        letter-spacing: -1px;
+      }
+      .subtitle {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 32px;
+      }
+      .directory {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: #f5f7fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        padding: 14px 12px 12px 12px;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: flex-start;
+        transition: box-shadow 0.2s;
+        border: 1px solid #e3e8ee;
+        min-width: 0;
+      }
+      .card:hover {
+        box-shadow: 0 6px 24px rgba(25, 118, 210, 0.1);
+        border-color: #b6d4fa;
+      }
+      .icon {
+        font-size: 1.7rem;
+        color: #1976d2;
+        margin-bottom: 6px;
+      }
+      .link-title {
+        font-size: 1.05rem;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: #1976d2;
+        text-decoration: none;
+        display: flex;
         align-items: center;
-        background-color: #f9f9f9;
-        font-family: Arial, sans-serif;
+        gap: 5px;
+        word-break: break-all;
       }
-
-      .spinner-container {
-        text-align: center;
+      .desc {
+        color: #444;
+        font-size: 0.93rem;
+        margin-bottom: 8px;
       }
-
-      .spinner {
-        margin: 0 auto 20px;
-        width: 50px;
-        height: 50px;
-        border: 6px solid #ccc;
-        border-top: 6px solid #3498db;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
+      .open-link {
+        margin-top: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #fff;
+        background: #1976d2;
+        border: none;
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 0.97rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.18s;
+        box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
+        cursor: pointer;
       }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
+      .open-link:hover {
+        background: #1565c0;
+      }
+      @media (max-width: 900px) {
+        .container {
+          padding: 8px 1vw;
         }
-        100% {
-          transform: rotate(360deg);
+        .directory {
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         }
       }
-
-      .message {
-        font-size: 1.2rem;
-        color: #333;
+      @media (max-width: 600px) {
+        .container {
+          padding: 6px 1vw;
+        }
+        .directory {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="spinner-container">
-      <div class="spinner"></div>
-      <div class="message">Te redirecționez acum...</div>
+    <div class="container">
+      <h1>Documentație & Linkuri utile</h1>
+      <div class="subtitle">
+        Centralizator tehnic pentru acces rapid la resurse, documentații și
+        linkuri importante.
+      </div>
+      <div id="directory" class="directory">
+        <!-- Cards will be injected here -->
+      </div>
     </div>
+    <script src="directory.js"></script>
   </body>
 </html>
