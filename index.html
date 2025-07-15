@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ASiSerp docu</title>
     <!-- Favicon rocket emoji -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'%3E%3Ctext y='58' font-size='60'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'%3E%3Ctext y='58' font-size='60'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E"
+    />
     <link
       href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
       rel="stylesheet"
@@ -129,6 +133,38 @@
       <div class="subtitle">
         Centralizator tehnic pentru acces rapid la resurse, documentații și
         linkuri importante.
+      </div>
+      <div
+        style="display: flex; justify-content: flex-end; margin-bottom: 18px"
+      >
+        <div style="position: relative; max-width: 320px; width: 100%">
+          <span
+            class="material-icons"
+            style="
+              position: absolute;
+              left: 10px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #1976d2;
+              font-size: 1.2em;
+            "
+            >search</span
+          >
+          <input
+            id="searchBar"
+            type="text"
+            placeholder="Caută..."
+            style="
+              width: 100%;
+              padding: 8px 8px 8px 36px;
+              border-radius: 6px;
+              border: 1px solid #b6d4fa;
+              font-size: 1rem;
+              outline: none;
+              box-sizing: border-box;
+            "
+          />
+        </div>
       </div>
       <div id="directory" class="directory">
         <!-- Cards will be injected here -->
