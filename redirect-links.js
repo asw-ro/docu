@@ -8,7 +8,7 @@ function check404Redirects() {
     .then(function (redirects) {
       // The API returns an array of objects: { numescurt, urlcomplet }
       var found = redirects.find(function (item) {
-        return item.numescurt === path;
+        return typeof item.numescurt === "string" && item.numescurt.toLowerCase() === path.toLowerCase();
       });
       if (found && found.urlcomplet) {
         var url = new URL(found.urlcomplet);
