@@ -57,7 +57,7 @@ function renderDirectory(data, filter = "") {
     card.className = "card";
     card.innerHTML = `
       <div class="card-title-row" style="display:flex;align-items:center;gap:8px;">
-        <span class="material-icons icon">${item.icoana || "link"}</span>
+        <span class="material-icons icon" style="color:#444;">${item.icoana || "link"}</span>
         <a class="link-title" href="${item.urlcomplet}" target="_blank" rel="noopener">${item.numescurt}</a>
       </div>
       <div class="tags">
