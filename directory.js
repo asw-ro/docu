@@ -56,15 +56,15 @@ function renderDirectory(data, filter = "") {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <span class="material-icons icon">${item.icoana || "link"}</span>
-      <a class="link-title" href="${item.urlcomplet}" target="_blank" rel="noopener">
-        ${item.numescurt}
-      </a>
+      <div class="card-title-row" style="display:flex;align-items:center;gap:8px;">
+        <span class="material-icons icon">${item.icoana || "link"}</span>
+        <a class="link-title" href="${item.urlcomplet}" target="_blank" rel="noopener">${item.numescurt}</a>
+      </div>
       <div class="tags">
         ${tags.map(tag => `<span class="tag">${tag.startsWith("#") ? tag : "#" + tag}</span>`).join("")}
       </div>
       <div class="desc">${item.descriere || ""}</div>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:auto;">
+      <div class="card-actions" style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:auto;width:100%;padding-top:8px;">
         <a class="open-link" href="${item.urlcomplet}" target="_blank" rel="noopener">
           <span class="material-icons" style="font-size:1.1em;">open_in_new</span> Deschide
         </a>
