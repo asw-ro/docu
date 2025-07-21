@@ -31,6 +31,8 @@ function renderDirectory(data, filter = "") {
   const dir = document.getElementById("directory");
   dir.innerHTML = "";
   data.forEach(item => {
+    // Skip display if privat is true (but allow redirection/copy)
+    if (item.privat === true || item.privat === 'true' || item.privat === 1) return;
     // Parse tags from item.etichete (comma or semicolon separated, or array)
     let tags = [];
     if (Array.isArray(item.etichete)) {
