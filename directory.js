@@ -121,7 +121,7 @@ function loadPublications() {
   publicatiiDir.innerHTML =
     '<div class="loading-state"><span class="loading-spinner"></span>Se încarcă publicările...</div>';
 
-  fetch("http://dev.asw.ro/ria/asisservice/linkuri?codlink=pasis")
+  fetch("https://dev.asw.ro/ria/asisservice/linkuri?codlink=pasis")
     .then(r => {
       if (!r.ok) {
         throw new Error(`HTTP ${r.status}: ${r.statusText}`);
