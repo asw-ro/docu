@@ -255,6 +255,378 @@ h1 {
 .open-link:hover {
   background: #1565c0;
 }
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e3e8ee;
+  overflow-x: auto;
+}
+
+.tab-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.tab-button:hover {
+  color: #1976d2;
+  background: rgba(25, 118, 210, 0.05);
+}
+
+.tab-button.active {
+  color: #1976d2;
+  border-bottom-color: #1976d2;
+  background: rgba(25, 118, 210, 0.08);
+}
+
+.tab-button .material-icons {
+  font-size: 1.2rem;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Publication Cards */
+.publication-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e3e8ee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.publication-card:hover {
+  border-color: #1976d2;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.1);
+}
+
+.publication-header {
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  color: #fff;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.publication-version {
+  font-size: 1.4rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.publication-date {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.publication-type {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.publication-body {
+  padding: 20px;
+}
+
+.files-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: #444;
+}
+
+.files-count {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.files-list {
+  display: grid;
+  gap: 8px;
+}
+
+.file-item {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  background: #e3f2fd;
+  border-color: #1976d2;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.file-path {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.file-message {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 6px;
+  line-height: 1.4;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.no-files {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.error-state {
+  color: #d32f2f;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e3e8ee;
+  border-top: 2px solid #1976d2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Search Results Styles */
+.search-results {
+  margin-bottom: 20px;
+}
+
+.search-results-header {
+  background: linear-gradient(135deg, #2e7d32, #388e3c);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.files-search-list {
+  border: 1px solid #e3e8ee;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+.file-search-item {
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 20px;
+  transition: all 0.2s ease;
+}
+
+.file-search-item:last-child {
+  border-bottom: none;
+}
+
+.file-search-item:hover {
+  background: #f8f9fa;
+  border-left: 4px solid #1976d2;
+  padding-left: 16px;
+}
+
+.file-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.file-search-header .file-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+  flex: 1;
+  min-width: 0;
+  word-break: break-all;
+}
+
+.publication-info {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.file-details {
+  margin-left: 0;
+}
+
+.file-details .file-path {
+  margin-bottom: 8px;
+}
+
+.file-details .file-message {
+  margin-top: 0;
+}
+
+/* Responsive pentru search results */
+@media (max-width: 900px) {
+  .file-search-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .publication-info {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 600px) {
+  .search-results-header {
+    padding: 10px 16px;
+    font-size: 1rem;
+  }
+
+  .file-search-item {
+    padding: 12px 16px;
+  }
+
+  .file-search-item:hover {
+    padding-left: 12px;
+  }
+
+  .file-search-header .file-name {
+    font-size: 1rem;
+  }
+}
+
+/* Responsive Design for Publications */
+@media (max-width: 900px) {
+  .tab-button {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+
+  .publication-header {
+    padding: 14px 16px;
+  }
+
+  .publication-version {
+    font-size: 1.2rem;
+  }
+
+  .publication-body {
+    padding: 16px;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tab-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .tab-button .material-icons {
+    font-size: 1.1rem;
+  }
+
+  .publication-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
 .open-link.copy-link {
   border: none;
   background: #43a047;
