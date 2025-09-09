@@ -363,9 +363,10 @@ fetch("cfg.json")
 function loadPublicationSummary(version, container) {
   if (!version || !container) return;
   // Daca rulam local prin file:// avertizam utilizatorul (fetch va esua in majoritatea browserelor)
-  if (location.protocol === 'file:') {
-    container.innerHTML = '<div class="snippet-fallback">Rezumat cu AI indisponibil în modul local (file://). Rulează: <code>python -m http.server 8000</code> sau un alt server static și accesează http://localhost:8000/</div>';
-    console.warn('[PublSnippet] Environment is file:// — need local HTTP server pentru a încărca readmes.');
+  if (location.protocol === "file:") {
+    container.innerHTML =
+      '<div class="snippet-fallback">Rezumat cu AI indisponibil în modul local (file://). Rulează: <code>python -m http.server 8000</code> sau un alt server static și accesează http://localhost:8000/</div>';
+    console.warn("[PublSnippet] Environment is file:// — need local HTTP server pentru a încărca readmes.");
     return;
   }
   if (publicationSummaryCache.has(version)) {
@@ -374,7 +375,7 @@ function loadPublicationSummary(version, container) {
     return;
   }
   const url = `readmes/v${version}.md`;
-  console.log('[PublSnippet] Fetching', url);
+  console.log("[PublSnippet] Fetching", url);
   fetch(url)
     .then(r => {
       if (!r.ok) throw new Error("Not found");
@@ -386,7 +387,7 @@ function loadPublicationSummary(version, container) {
       publicationSummaryCache.set(version, html || "");
       container.innerHTML = html || `<div class="snippet-fallback">Nu s-au găsit puncte-cheie în fișierul markdown.</div>`;
       attachSnippetEvents(container, version);
-      console.log('[PublSnippet] Snippet OK pentru v' + version);
+      console.log("[PublSnippet] Snippet OK pentru v" + version);
     })
     .catch(err => {
       // In modul file:// fetch esueaza in majoritatea browserelor; afisam fallback
@@ -531,12 +532,12 @@ function closeMarkdownModal() {
 function renderFullMarkdown(md) {
   if (!md) return '<div class="md-content"><p>(Gol)</p></div>';
   const lines = md.split(/\r?\n/);
-  let html = '';
+  let html = "";
   let inCode = false;
   let listOpen = false;
   const flushList = () => {
     if (listOpen) {
-      html += '</ul>';
+      html += "</ul>";
       listOpen = false;
     }
   };
@@ -550,12 +551,12 @@ function renderFullMarkdown(md) {
         html += '<pre class="md-code">';
       } else {
         inCode = false;
-        html += '</pre>';
+        html += "</pre>";
       }
       return;
     }
     if (inCode) {
-      html += line.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '\n';
+      html += line.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\n";
       return;
     }
     // Headings
@@ -572,9 +573,9 @@ function renderFullMarkdown(md) {
       if (!listOpen) {
         flushList();
         listOpen = true;
-        html += '<ul>';
+        html += "<ul>";
       }
-      const item = line.replace(/^\s*[-*]\s+/, '');
+      const item = line.replace(/^\s*[-*]\s+/, "");
       html += `<li>${escapeInline(item)}</li>`;
       return;
     } else {
@@ -588,18 +589,18 @@ function renderFullMarkdown(md) {
     html += `<p>${escapeInline(line.trim())}</p>`;
   });
   flushList();
-  if (inCode) html += '</pre>';
+  if (inCode) html += "</pre>";
   return `<div class="md-content">${html}</div>`;
 }
 
 function escapeInline(text) {
   return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>");
 }
 
 // (A doua implementare veche a fost eliminată pentru a evita confuzii)
