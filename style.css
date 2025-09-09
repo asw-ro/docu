@@ -63,6 +63,102 @@ body {
   font-family: "Roboto", Arial, sans-serif;
   color: #222;
 }
+
+/* ===== Publicatii: listă verticală ===== */
+.publications-vertical-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+.publication-card.vertical {
+  border: 1px solid #d0e3f5;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.publication-card.vertical.expanded {
+  box-shadow: 0 4px 14px rgba(25, 118, 210, 0.18);
+  border-color: #1976d2;
+}
+.publication-header.vertical-header {
+  background: linear-gradient(90deg, #1976d2 0%, #1e88e5 40%, #2196f3 100%);
+  color: #fff;
+  padding: 18px 22px; /* mai gros */
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+}
+.publication-header.vertical-header:focus {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+.publication-header.vertical-header .left-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.publication-header.vertical-header .left-meta .material-icons {
+  font-size: 1.2rem;
+}
+.publication-header.vertical-header .publication-version {
+  font-size: 1.05rem;
+}
+.publication-header.vertical-header .publication-type {
+  background: rgba(255, 255, 255, 0.18);
+  padding: 3px 10px;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.publication-header.vertical-header .publication-type.critical {
+  background: #d32f2f;
+}
+.publication-header.vertical-header .right-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+.publication-header.vertical-header .right-meta .material-icons {
+  font-size: 1rem;
+}
+.publication-header .expand-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  padding: 4px 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.publication-header .expand-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.publication-body {
+  padding: 16px 18px 20px 18px;
+  background: #fff;
+}
+.publication-body .files-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
 .search-container {
   display: flex;
   justify-content: flex-end;
