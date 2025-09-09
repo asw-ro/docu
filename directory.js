@@ -362,12 +362,19 @@ fetch("cfg.json")
 // ================= Rezumat publicatie (markdown) =================
 function loadPublicationSummary(version, container) {
   if (!version || !container) return;
+  // Daca rulam local prin file:// avertizam utilizatorul (fetch va esua in majoritatea browserelor)
+  if (location.protocol === 'file:') {
+    container.innerHTML = '<div class="snippet-fallback">Rezumat cu AI indisponibil în modul local (file://). Rulează: <code>python -m http.server 8000</code> sau un alt server static și accesează http://localhost:8000/</div>';
+    console.warn('[PublSnippet] Environment is file:// — need local HTTP server pentru a încărca readmes.');
+    return;
+  }
   if (publicationSummaryCache.has(version)) {
     container.innerHTML = publicationSummaryCache.get(version);
     attachSnippetEvents(container, version);
     return;
   }
   const url = `readmes/v${version}.md`;
+  console.log('[PublSnippet] Fetching', url);
   fetch(url)
     .then(r => {
       if (!r.ok) throw new Error("Not found");
@@ -379,6 +386,7 @@ function loadPublicationSummary(version, container) {
       publicationSummaryCache.set(version, html || "");
       container.innerHTML = html || `<div class="snippet-fallback">Nu s-au găsit puncte-cheie în fișierul markdown.</div>`;
       attachSnippetEvents(container, version);
+      console.log('[PublSnippet] Snippet OK pentru v' + version);
     })
     .catch(err => {
       // In modul file:// fetch esueaza in majoritatea browserelor; afisam fallback
@@ -420,7 +428,13 @@ function buildSummarySnippet(md, version) {
   const itemsHtml = bullets
     .map(b => "<li>" + escapeBasicMarkdownInline(b.replace(/^\s*[-*]\s+/, "").trim()) + "</li>")
     .join("");
-  return `<div class="snippet-wrapper"><span class="snippet-label">Rezumat cu AI:</span><ul class="snippet-list" aria-label="Rezumat versiune v${version}">${itemsHtml}</ul><button type="button" class="snippet-full-btn" data-version="${version}" aria-label="Deschide markdown complet versiune ${version}">Citeste tot</button></div>`;
+  return `<div class="snippet-wrapper two-col">
+    <div class="snippet-side" aria-label="Acțiuni rezumat v${version}">
+      <div class="snippet-label">Rezumat cu AI</div>
+      <button type="button" class="snippet-full-btn" data-version="${version}" aria-label="Deschide markdown complet versiune ${version}">Citeste tot</button>
+    </div>
+    <ul class="snippet-list" aria-label="Rezumat versiune v${version}">${itemsHtml}</ul>
+  </div>`;
 }
 
 function escapeBasicMarkdownInline(text) {
@@ -513,62 +527,82 @@ function closeMarkdownModal() {
   if (overlay) overlay.style.display = "none";
 }
 
+// Parser simplu pentru markdown (heading-uri, liste, code blocks, inline bold/italic/code)
 function renderFullMarkdown(md) {
-  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  if (!md) return '<div class="md-content"><p>(Gol)</p></div>';
   const lines = md.split(/\r?\n/);
-  let html = "";
-  let inList = false,
-    inCode = false;
-  lines.forEach(line => {
+  let html = '';
+  let inCode = false;
+  let listOpen = false;
+  const flushList = () => {
+    if (listOpen) {
+      html += '</ul>';
+      listOpen = false;
+    }
+  };
+  lines.forEach(rawLine => {
+    const line = rawLine; // keep as-is for code blocks
+    // Code fence
     if (/^```/.test(line.trim())) {
       if (!inCode) {
-        html += '<pre class="md-code"><code>';
+        flushList();
         inCode = true;
+        html += '<pre class="md-code">';
       } else {
-        html += "</code></pre>";
         inCode = false;
+        html += '</pre>';
       }
       return;
     }
     if (inCode) {
-      html += esc(line) + "\n";
+      html += line.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '\n';
       return;
     }
-    if (/^\s*$/.test(line)) {
-      if (inList) {
-        html += "</ul>";
-        inList = false;
+    // Headings
+    const h = line.match(/^(#{1,6})\s+(.*)$/);
+    if (h) {
+      flushList();
+      const level = h[1].length;
+      const content = h[2].trim();
+      html += `<h${level}>${escapeInline(content)}</h${level}>`;
+      return;
+    }
+    // List item
+    if (/^\s*[-*]\s+/.test(line)) {
+      if (!listOpen) {
+        flushList();
+        listOpen = true;
+        html += '<ul>';
       }
+      const item = line.replace(/^\s*[-*]\s+/, '');
+      html += `<li>${escapeInline(item)}</li>`;
       return;
+    } else {
+      flushList();
     }
-    const heading = line.match(/^(#{1,6})\s+(.*)$/);
-    if (heading) {
-      if (inList) {
-        html += "</ul>";
-        inList = false;
-      }
-      const lvl = heading[1].length;
-      html += `<h${lvl}>${escapeBasicMarkdownInline(heading[2])}</h${lvl}>`;
-      return;
+    // Empty line
+    if (!line.trim()) {
+      return; // paragraph separation
     }
-    if (/^[-*]\s+/.test(line)) {
-      if (!inList) {
-        html += "<ul>";
-        inList = true;
-      }
-      html += "<li>" + escapeBasicMarkdownInline(line.replace(/^[-*]\s+/, "")) + "</li>";
-      return;
-    }
-    if (inList) {
-      html += "</ul>";
-      inList = false;
-    }
-    html += "<p>" + escapeBasicMarkdownInline(line) + "</p>";
+    // Paragraph
+    html += `<p>${escapeInline(line.trim())}</p>`;
   });
-  if (inList) html += "</ul>";
-  if (inCode) html += "</code></pre>";
+  flushList();
+  if (inCode) html += '</pre>';
   return `<div class="md-content">${html}</div>`;
 }
+
+function escapeInline(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+}
+
+// (A doua implementare veche a fost eliminată pentru a evita confuzii)
 
 document.addEventListener("click", e => {
   const btn = e.target.closest(".snippet-full-btn");
