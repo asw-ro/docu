@@ -264,10 +264,10 @@ function renderAllPublications(data, container) {
         toggle();
       }
     });
-    // Incarcam rezumatul (snippet) din fisierul markdown corespunzator versiunii
+    // Incarcam rezumatul (snippet) din campul "rezumat" al publicatiei
     const summaryEl = card.querySelector(".publication-summary-snippet");
     if (summaryEl) {
-      loadPublicationSummary(pub.versiune_publicata, summaryEl);
+      loadPublicationSummary(pub, summaryEl);
     }
     list.appendChild(card);
   });
@@ -361,46 +361,28 @@ fetch("cfg.json")
     loadDocuData();
   });
 
-// ================= Rezumat publicatie (markdown) =================
-function loadPublicationSummary(version, container) {
-  if (!version || !container) return;
-  // Daca rulam local prin file:// avertizam utilizatorul (fetch va esua in majoritatea browserelor)
-  if (location.protocol === "file:") {
-    container.innerHTML =
-      '<div class="snippet-fallback">Rezumat cu AI indisponibil în modul local (file://). Rulează: <code>python -m http.server 8000</code> sau un alt server static și accesează http://localhost:8000/</div>';
-    console.warn("[PublSnippet] Environment is file:// — need local HTTP server pentru a încărca readmes.");
-    return;
-  }
+// ================= Rezumat publicatie (din JSON) =================
+function loadPublicationSummary(publication, container) {
+  if (!publication || !container) return;
+
+  const version = publication.versiune_publicata;
   if (publicationSummaryCache.has(version)) {
     container.innerHTML = publicationSummaryCache.get(version);
-    attachSnippetEvents(container, version);
+    attachSnippetEvents(container, publication);
     return;
   }
-  const url = `readmes/v${version}.md`;
-  console.log("[PublSnippet] Fetching", url);
-  fetch(url)
-    .then(r => {
-      if (!r.ok) throw new Error("Not found");
-      return r.text();
-    })
-    .then(md => {
-      publicationFullMarkdownCache.set(version, md);
-      const html = buildSummarySnippet(md, version);
-      publicationSummaryCache.set(version, html || "");
-      container.innerHTML = html || `<div class="snippet-fallback">Nu s-au găsit puncte-cheie în fișierul markdown.</div>`;
-      attachSnippetEvents(container, version);
-      console.log("[PublSnippet] Snippet OK pentru v" + version);
-    })
-    .catch(err => {
-      // In modul file:// fetch esueaza in majoritatea browserelor; afisam fallback
-      const local = location.protocol === "file:";
-      console.warn("[PublSnippet] fetch fail", version, err);
-      container.innerHTML = `<div class="snippet-fallback">${
-        local
-          ? "Rezumat cu AI indisponibil în modul local (file://). Rulează un server static pentru a încărca fișierul."
-          : "Rezumat cu AI indisponibil."
-      }</div>`;
-    });
+
+  // Folosim campul "rezumat" din JSON in loc de fisiere markdown
+  if (publication.rezumat && publication.rezumat.trim()) {
+    publicationFullMarkdownCache.set(version, publication.rezumat);
+    const html = buildSummarySnippet(publication.rezumat, version);
+    publicationSummaryCache.set(version, html || "");
+    container.innerHTML = html || `<div class="snippet-fallback">Nu s-au găsit puncte-cheie în rezumat.</div>`;
+    attachSnippetEvents(container, publication);
+    console.log("[PublSnippet] Snippet OK pentru v" + version);
+  } else {
+    container.innerHTML = `<div class="snippet-fallback">Nu există rezumat disponibil pentru această versiune.</div>`;
+  }
 }
 
 function buildSummarySnippet(md, version) {
@@ -451,7 +433,8 @@ function escapeBasicMarkdownInline(text) {
 }
 
 // === Modal full markdown ===
-function attachSnippetEvents(container, version) {
+function attachSnippetEvents(container, publication) {
+  const version = publication.versiune_publicata;
   const btn = container.querySelector(".snippet-full-btn");
   if (btn) {
     btn.addEventListener("click", e => {
@@ -474,7 +457,6 @@ function ensureMarkdownModal() {
         <div class="md-modal-header">
           <h2 id="mdModalTitle">Publicare</h2>
           <div class="md-modal-actions">
-            <button type="button" class="md-copy-btn" title="Copiază markdown" aria-label="Copiază markdown"><span class="material-icons">content_copy</span></button>
             <button type="button" class="md-close-btn" title="Închide" aria-label="Închide"><span class="material-icons">close</span></button>
           </div>
         </div>
@@ -485,16 +467,6 @@ function ensureMarkdownModal() {
       if (e.target === overlay) closeMarkdownModal();
     });
     overlay.querySelector(".md-close-btn").addEventListener("click", closeMarkdownModal);
-    overlay.querySelector(".md-copy-btn").addEventListener("click", () => {
-      const version = overlay.getAttribute("data-version");
-      const md = publicationFullMarkdownCache.get(version) || "";
-      navigator.clipboard.writeText(md).then(() => {
-        const btn = overlay.querySelector(".md-copy-btn");
-        const old = btn.innerHTML;
-        btn.innerHTML = '<span class="material-icons">check</span>';
-        setTimeout(() => (btn.innerHTML = old), 1200);
-      });
-    });
     window.addEventListener("keydown", e => {
       if (e.key === "Escape" && overlay.style.display === "block") closeMarkdownModal();
     });
@@ -512,16 +484,7 @@ function openMarkdownModal(version) {
   if (publicationFullMarkdownCache.has(version)) {
     body.innerHTML = renderFullMarkdown(publicationFullMarkdownCache.get(version));
   } else {
-    body.innerHTML = '<div class="md-loading">Se încarcă...</div>';
-    fetch(`readmes/v${version}.md`)
-      .then(r => (r.ok ? r.text() : Promise.reject()))
-      .then(md => {
-        publicationFullMarkdownCache.set(version, md);
-        body.innerHTML = renderFullMarkdown(md);
-      })
-      .catch(() => {
-        body.innerHTML = '<div class="md-error">Nu s-a putut încărca fișierul markdown.</div>';
-      });
+    body.innerHTML = '<div class="md-error">Nu este disponibil rezumatul complet pentru această versiune.</div>';
   }
 }
 
