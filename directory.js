@@ -59,6 +59,8 @@ function renderDirectory(data, search = null, tagFilter = null) {
   const term = (search || "").toLowerCase();
   let shown = 0;
   data.forEach(item => {
+    // Filtrare: nu afișa linkurile cu privat: true
+    if (item.privat === true) return;
     let tags = [];
     if (Array.isArray(item.etichete)) tags = item.etichete;
     else if (typeof item.etichete === "string")
