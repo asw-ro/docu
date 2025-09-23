@@ -108,8 +108,19 @@ function renderDirectory(data, search = null, tagFilter = null) {
 
 function loadDocuData() {
   const dir = document.getElementById("directory");
-  if (dir)
-    dir.innerHTML = '<div class="loading-state"><span class="loading-spinner"></span>Se încarcă documentațiile...</div>';
+  if (dir) {
+    // Show skeleton cards while loading
+    dir.innerHTML = Array.from(
+      { length: 6 },
+      () => `
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-line short"></div>
+        <div class="skeleton skeleton-line medium"></div>
+        <div class="skeleton skeleton-line long"></div>
+      </div>
+    `
+    ).join("");
+  }
   fetch(config.urlDocu, { headers: { Accept: "application/json" } })
     .then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status);
@@ -147,7 +158,17 @@ function loadDocuData() {
 function loadPublications() {
   const wrap = document.getElementById("publicatiiDirectory");
   if (!wrap) return;
-  wrap.innerHTML = '<div class="loading-state"><span class="loading-spinner"></span>Se încarcă publicările...</div>';
+  // Show skeleton publication cards
+  wrap.innerHTML = Array.from(
+    { length: 4 },
+    () => `
+    <div class="skeleton-card" style="height: 120px;">
+      <div class="skeleton skeleton-line short" style="height: 20px;"></div>
+      <div class="skeleton skeleton-line medium" style="height: 16px; margin-top: 16px;"></div>
+      <div class="skeleton skeleton-line long" style="height: 16px;"></div>
+    </div>
+  `
+  ).join("");
   fetch(config.urlPubl, { headers: { Accept: "application/json" } })
     .then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status);
@@ -212,7 +233,7 @@ function renderAllPublications(data, container) {
           <button class="expand-btn" aria-label="Detalii versiune"><span class="material-icons">expand_more</span></button>
         </div>
         <div class="publication-summary-snippet" data-version="${pub.versiune_publicata}">
-          <div class="snippet-loading">Se încarcă Rezumat cu AI...</div>
+          <div class="snippet-loading">Se încarcă Rezumat cu AI <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-left: 4px;"><path d="M12 2L13.09 7.26L18 8L13.09 8.74L12 14L10.91 8.74L6 8L10.91 7.26L12 2Z"/><path d="M19 15L20.09 17.26L23 18L20.09 18.74L19 21L17.91 18.74L15 18L17.91 17.26L19 15Z"/><path d="M7.5 10L8.09 11.26L10 12L8.09 12.74L7.5 14L6.91 12.74L5 12L6.91 11.26L7.5 10Z"/></svg>...</div>
         </div>
       </div>
       <div class="publication-body" style="display:none">
@@ -415,7 +436,7 @@ function buildSummarySnippet(md, version) {
     .join("");
   return `<div class="snippet-wrapper two-col">
     <div class="snippet-side" aria-label="Acțiuni rezumat v${version}">
-      <div class="snippet-label">Rezumat cu AI</div>
+      <div class="snippet-label">Rezumat cu AI <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-left: 4px;"><path d="M12 2L13.09 7.26L18 8L13.09 8.74L12 14L10.91 8.74L6 8L10.91 7.26L12 2Z"/><path d="M19 15L20.09 17.26L23 18L20.09 18.74L19 21L17.91 18.74L15 18L17.91 17.26L19 15Z"/><path d="M7.5 10L8.09 11.26L10 12L8.09 12.74L7.5 14L6.91 12.74L5 12L6.91 11.26L7.5 10Z"/></svg></div>
       <button type="button" class="snippet-full-btn" data-version="${version}" aria-label="Deschide markdown complet versiune ${version}">Citeste tot</button>
     </div>
     <ul class="snippet-list" aria-label="Rezumat versiune v${version}">${itemsHtml}</ul>
