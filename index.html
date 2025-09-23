@@ -24,19 +24,49 @@
       <div class="header-wrapper">
         <div class="header-titles">
           <h1>Documentație & Linkuri utile</h1>
-          <div class="subtitle">Centralizator tehnic pentru acces rapid la resurse, documentații și linkuri importante.</div>
+          <div class="subtitle">
+            Centralizator tehnic pentru acces rapid la resurse, documentații și publicări de ASiSerp.
+          </div>
         </div>
         <img src="/assets/asw.png" alt="ASW Logo" class="asw-logo" />
       </div>
-      <div class="search-container">
-        <div class="search-wrapper">
-          <span class="material-icons">search</span>
-          <input id="searchBar" type="text" placeholder="Caută..." class="search-bar" />
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button id="docuTab" class="tab-button active" onclick="switchTab('docu')">
+          <span class="material-icons">folder</span>
+          Documentație
+        </button>
+        <button id="publicatiiTab" class="tab-button" onclick="switchTab('publicatii')">
+          <span class="material-icons">history</span>
+          Publicări
+        </button>
+      </div>
+
+      <!-- Documentation Tab Content -->
+      <div id="docuContent" class="tab-content active">
+        <div class="search-container">
+          <div class="search-wrapper">
+            <span class="material-icons">search</span>
+            <input id="searchBar" type="text" placeholder="Caută..." class="search-bar" />
+          </div>
+        </div>
+        <div id="tagFilters" class="tag-filters"></div>
+        <div id="directory" class="directory">
+          <!-- Cards will be injected here -->
         </div>
       </div>
-      <div id="tagFilters" class="tag-filters"></div>
-      <div id="directory" class="directory">
-        <!-- Cards will be injected here -->
+
+      <!-- Publications Tab Content -->
+      <div id="publicatiiContent" class="tab-content">
+        <div class="search-container">
+          <div class="search-wrapper">
+            <span class="material-icons">search</span>
+            <input id="publicatiiSearchBar" type="text" placeholder="Caută în publicări..." class="search-bar" />
+          </div>
+        </div>
+        <div id="publicatiiDirectory" class="directory">
+          <!-- Publication versions will be injected here -->
+        </div>
       </div>
       <footer class="footer">
         <div class="footer-content">
@@ -48,5 +78,9 @@
       </footer>
     </div>
     <script src="directory.js"></script>
+    <script>
+      // Make switchTab function globally available
+      window.switchTab = switchTab;
+    </script>
   </body>
 </html>
