@@ -45,7 +45,18 @@ function lh(o) {
       document.body.appendChild(r);
       let c = getComputedStyle(r).backgroundColor;
       document.body.style.backgroundColor = c;
-      document.title = temp.querySelector("title").innerText;
+      const titleText = temp.querySelector("title").innerText;
+      document.title = titleText;
+      try {
+        const dt = document.getElementById("docTitle");
+        if (dt) {
+          const span = dt.querySelector(".doc-title-text");
+          if (span) span.textContent = titleText;
+        }
+      } catch (e) {
+        /* silent */
+      }
+      // Keep structured chip (dot + text); do not overwrite with plain innerText
       if (c === "rgba(0, 0, 0, 0)") {
         try {
           hcb(r, n);

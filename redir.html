@@ -12,9 +12,20 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fdd835' d='M9 21h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1Zm3-19a7 7 0 0 1 4.86 11.95c-.54.53-.86 1.24-.86 2v.55a1 1 0 0 1-.62.92c-.73.29-1.38.73-1.87 1.27a1 1 0 0 1-1.42 0 5 5 0 0 0-1.87-1.27a1 1 0 0 1-.62-.92V16c0-.75-.32-1.47-.88-2A7 7 0 0 1 12 2Z'/%3E%3C/path%3E%3C/svg%3E"
     />
     <link rel="icon" sizes="32x32" href="/assets/favicon-96x96.png" />
+    <link rel="stylesheet" href="style.css" />
     <script src="google-doc-loader.js"></script>
   </head>
   <body style="margin: 0; max-width: initial">
-    <!-- Content will be populated by google-doc-loader.js using the ?id=... query string -->
+    <div id="backBar" class="doc-view-bar">
+      <a href="/index.html" class="doc-back-btn"><span style="font-size: 1.05rem">⟵</span><span>Înapoi</span></a>
+      <div class="doc-title-wrapper">
+        <div id="docTitle" class="doc-title-chip">
+          <span class="doc-title-dot" aria-hidden="true"></span>
+          <span class="doc-title-text">Google Doc View</span>
+        </div>
+      </div>
+      <div style="width: 32px; height: 1px"></div>
+    </div>
+    <!-- Content will be populated by google-doc-loader.js using the ?document_id=... query string -->
   </body>
 </html>
