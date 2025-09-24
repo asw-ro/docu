@@ -73,6 +73,9 @@ function renderDirectory(data, search = null, tagFilter = null) {
     if (term && !blob.includes(term)) return;
     const card = document.createElement("div");
     card.className = "card";
+    // Construim URL-ul scurt care redirectioneaza (format: {origin}/{numescurt})
+    const origin = (typeof window !== "undefined" && window.location && window.location.origin) || "https://docu.asiserp.ro";
+    const shortUrl = origin.replace(/\/$/, "") + "/" + encodeURIComponent(item.numescurt || "");
     card.innerHTML = `<div class="card-title-row" style="display:flex;align-items:center;gap:8px;">
         <span class="material-icons icon" style="color:#444;">${item.icoana || "link"}</span>
         <a class="link-title" href="${item.urlcomplet}" target="_blank" rel="noopener">${item.numescurt}</a>
@@ -83,9 +86,7 @@ function renderDirectory(data, search = null, tagFilter = null) {
         <a class="open-link" href="${
           item.urlcomplet
         }" target="_blank" rel="noopener"><span class="material-icons" style="font-size:1.1em;">open_in_new</span> Deschide</a>
-        <button class="open-link copy-link" data-link="${
-          item.urlcomplet
-        }" type="button" style="background:#43a047;"><span class="material-icons" style="font-size:1.1em;">content_copy</span> Copiază</button>
+        <button class="open-link copy-link" data-link="${shortUrl}" type="button" style="background:#43a047;"><span class="material-icons" style="font-size:1.1em;">content_copy</span> Copiază</button>
       </div>`;
     dir.appendChild(card);
     shown++;
