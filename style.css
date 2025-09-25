@@ -796,7 +796,9 @@ body {
   display: inline-flex;
   align-items: center;
 }
-.tag-filter:focus-visible { box-shadow: 0 0 0 2px #90caf9; }
+.tag-filter:focus-visible {
+  box-shadow: 0 0 0 2px #90caf9;
+}
 .tag-filter.active,
 .tag-filter:active {
   background: #1976d2;
