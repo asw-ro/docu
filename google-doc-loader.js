@@ -6,10 +6,15 @@ function getQueryParam(param) {
   return urlParams.get(param);
 }
 
-function showError(o) {
+function showError() {
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div style='margin: 25px; font-family: Helvetica, Arial, sans-serif'>Nu s-a putut prelua documentul Google: ${o} | 1) Ai urmat instrucțiunile și ai publicat documentul pe web? | 2) Ai copiat/lipit corect adresa URL?</div>
+    `<div style="background:#fff;padding:2rem 3rem;border-radius:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;max-width:400px;margin:5rem auto;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;color:#333;">
+  <h1 style="font-size:1.6rem;margin-bottom:0.5rem;color:#111827;">Document inaccesibil</h1>
+  <p style="font-size:1rem;margin-bottom:1.5rem;color:#6b7280;">Ne pare rău, dar această pagină nu poate fi afișată fără un identificator de document valid.</p>
+  <a href="/" style="display:inline-block;padding:0.6rem 1.2rem;border-radius:0.5rem;text-decoration:none;background:#2563eb;color:#fff;font-weight:500;transition:background 0.2s ease;">Înapoi la pagina principală</a>
+</div>
+
 `
   );
 }
@@ -66,7 +71,7 @@ function lh(o) {
       }
     })
     .catch(err => {
-      showError(err.message);
+      showError();
     })
     .finally(() => {
       window.dataLayer = window.dataLayer || [];
@@ -80,7 +85,7 @@ function lh(o) {
 function main() {
   const docId = getQueryParam("document_id");
   if (!docId) {
-    showError("Lipsește ID-ul documentului Google în șirul de interogare (?document_id=...)");
+    showError();
     return;
   }
   let url = docId.startsWith("2PACX-")
