@@ -7,6 +7,8 @@ function getQueryParam(param) {
 }
 
 function showError() {
+  const spinner = document.getElementsByClassName("spinner-container");
+  if (spinner) spinner[0].remove();
   document.body.insertAdjacentHTML(
     "beforeend",
     `<div style="background:#fff;padding:2rem 3rem;border-radius:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;max-width:400px;margin:5rem auto;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;color:#333;">
@@ -52,6 +54,8 @@ function lh(o) {
       document.body.style.backgroundColor = c;
       const titleText = temp.querySelector("title").innerText;
       document.title = titleText;
+      const spinner = document.getElementsByClassName("spinner-container");
+      if (spinner) spinner[0].remove();
       try {
         const dt = document.getElementById("docTitle");
         if (dt) {
