@@ -2,67 +2,165 @@
 
 Acest proiect oferă un hub modern și rapid pentru accesarea documentației și a linkurilor importante din ecosistemul ASiS/ASW.
 
-## 🚀 Ce face?
+## 🎯 Cele 4 Funcționalități Principale
 
-- **Tab Documentație**: Afișează automat, dinamic, toate linkurile relevante, cu descriere, pictogramă și acțiuni rapide.
-- **Tab Publicări**: Oferă acces cronologic la toate versiunile publicate, cu detalii despre fișierele modificate și rezumate AI.
-- Permite deschiderea rapidă a fiecărui link sau copierea unui link scurt personalizat.
-- Design responsive, curat, inspirat de platforme de documentație tehnică moderne.
+### 1. 🔗 Redirect pe Link Scurt (URL Shortener)
 
-## 🛠️ Cum funcționează?
+Accesează orice documentație rapid prin linkuri scurte personalizate.
 
-### Tab Documentație
+**Exemplu:** `https://docu.asiserp.ro/accize`
 
-- Datele sunt preluate dinamic dintr-un endpoint JSON (`asis.asw.ro/asisservice/linkuri?codlink=docu&reponsetype=json`).
-- Fiecare link are: nume scurt, descriere, pictogramă (Google Material Icons), link complet și link scurt.
-- Interfața este generată automat pe baza acestor date.
-- **Redirect automat (URL shortener):** Dacă accesezi direct `https://docu.asiserp.ro/[nume_scurt]`, vei fi redirecționat automat către linkul complet asociat.
+**Cum funcționează:**
 
-### Tab Publicări
+- Accesezi un link scurt de forma `https://docu.asiserp.ro/[numescurt]`
+- Sistemul caută automat în baza de date linkul complet asociat
+- Ești redirecționat instant către documentația completă
+- Ideal pentru: share pe chat, incorporare în alte aplicații, link-uri rapide în documente
 
-- Afișează versiunile publicate în ordine cronologică inversă (cea mai nouă versiune prima).
-- Pentru fiecare versiune sunt prezentate: numărul versiunii, tipul publicării (Standard/Critic), data/ora publicării și numărul de fișiere modificate.
-- **Rezumate AI**: Fiecare publicare are un rezumat generat automat cu inteligența artificială.
-- **Detalii expandabile**: Click pe orice publicare pentru a vedea lista detaliată a fișierelor modificate.
-- **Căutare avansată**: Poți căuta prin toate fișierele din toate versiunile pentru a găsi rapid modificări specifice.
+**Implementare:** Fișierul `404.html` încarcă `redirect-links.js` care face lookup în API și redirecționează automat.
 
-## 📦 Structura fișierelor
+### 2. 📖 Vizualizare Documentație în Site (Viewer Integrat)
 
-- `index.html` — Pagina principală cu navigare pe taburi, stilizată modern.
-- `directory.js` — Scriptul care preia datele și construiește interfața pentru ambele taburi.
-- `style.css` — Stilurile pentru design responsive și interfața modernă.
-- `redirect-links.js` — Logica pentru redirect automat (URL shortener).
-- `404.html` — Pagina pentru linkuri inexistente.
-- `assets/` — Iconițe, favicon și alte resurse grafice.
+Vizualizează documentele direct în cadrul site-ului, fără a părăsi interfața.
 
-## 🖱️ Funcționalități cool
+**URL format:** `https://docu.asiserp.ro/redir.html?document_id=[id_google_doc]`
 
-### Tab Documentație
+**Cum funcționează:**
 
-- **Deschide**: Accesezi direct resursa dorită.
-- **Copiază link**: Obții instant linkul scurt, gata de trimis colegilor.
-- **Redirect automat**: Oricine accesează un link scurt de forma `https://docu.asiserp.ro/[nume_scurt]` va fi dus direct la documentul complet.
-- **Pictograme**: Fiecare resursă are o iconiță relevantă, pentru identificare rapidă.
-- **Filtrare pe etichete**: Poți filtra linkurile după categorii/etichete.
+- Pagina `redir.html` încarcă și afișează conținutul documentelor Google
+- Oferă o experiență unificată de navigare
+- Include bară de navigare cu buton "Înapoi" către pagina principală
+- Design responsive și optimizat pentru citire
 
-### Tab Publicări
+**Implementare:** Fișierul `redir.html` folosește `google-doc-loader.js` pentru a încărca și afișa conținutul.
 
-- **Istoric complet**: Vizualizează toate versiunile publicate în ordine cronologică.
-- **Rezumate AI**: Fiecare publicare are un rezumat automat generat cu AI pentru înțelegere rapidă.
-- **Detalii versiune**: Click pentru a desfășura și a vedea toate fișierele modificate în acea versiune.
-- **Căutare globală**: Caută prin toate fișierele din toate versiunile simultan.
-- **Informații metadata**: Vezi data/ora publicării, tipul (Standard/Critic) și numărul de fișiere afectate.
-- **Design responsive**: Layout optimizat pentru vizualizare pe orice dispozitiv.
+### 3. � Index Centralizat de Documentație
+
+Catalog complet al tuturor documentațiilor disponibile cu funcții de căutare și filtrare.
+
+**URL:** `https://docu.asiserp.ro/` (tab implicit "Documentație")
+
+**Funcționalități:**
+
+- Afișare card-uri pentru fiecare documentație
+- Căutare în timp real
+- Filtrare după etichete/categorii
+- Acțiuni rapide: "Deschide" și "Copiază link scurt"
+- Design modern cu iconițe Material Design
+- Datele sunt preluate dinamic din API JSON
+
+### 4. 📊 Detalii Publicare (Changelog Viewer)
+
+Vizualizează informații complete despre o versiune publicată specifică.
+
+**URL format:** `https://docu.asiserp.ro/publicare.html?v=[numar_versiune]`
+
+**Exemplu:** `https://docu.asiserp.ro/publicare.html?v=54439`
+
+**Cum funcționează:**
+
+- Afișează metadata completă a publicării (versiune, dată, tip, număr fișiere)
+- Prezintă rezumatul AI al modificărilor
+- Design elegant cu gradient highlighting
+- Buton "Înapoi" către lista completă de publicări
+
+**Implementare:** Fișierul `publicare.html` extrage parametrul `v` din URL și caută în API-ul de publicări.
+
+## Structura fișierelor
+
+### Pagini principale
+
+- `index.html` — Pagina principală cu navigare pe taburi (Documentație + Publicări)
+- `redir.html` — Viewer pentru afișarea documentelor Google în cadrul site-ului
+- `publicare.html` — Pagină detaliată pentru o publicare specifică (cu parametru `?v=`)
+- `404.html` — Pagina pentru redirect automat (URL shortener)
+
+### Scripts
+
+- `directory.js` — Logica pentru afișarea documentației și publicărilor în interfața principală
+- `redirect-links.js` — Implementează funcționalitatea de URL shortener
+- `google-doc-loader.js` — Încarcă și afișează documente Google în viewer
+- `version-router.js` — Gestionează rutarea și parametrii URL
+
+### Configurare și stiluri
+
+- `cfg.json` — Configurare centralizată cu URL-urile API-urilor
+- `style.css` — Stiluri globale pentru design responsive și modern
+
+### Resurse
+
+- `assets/` — Iconițe, favicon și alte resurse grafice (logo, thumbnail pentru social media)
 
 ## 🧑‍💻 Cum adaugi conținut nou?
 
-### Pentru documentație
+### Pentru documentație (funcționalitățile 1-3)
 
-Adaugă linkul în sursa de date (API-ul JSON `codlink=docu`). Nu e nevoie de modificări în cod!
+Adaugă linkul în sursa de date prin API-ul JSON:
 
-### Pentru publicări
+- **Endpoint:** `https://asis.asw.ro/asisservice/linkuri?codlink=docu&reponsetype=json`
+- **Format:** Fiecare intrare trebuie să conțină:
+  - `numescurt` - identificator pentru link-ul scurt (ex: "accize")
+  - `urlcomplet` - URL-ul complet către documentație
+  - `nume` - titlu afișat în card
+  - `descriere` - text descriptiv
+  - `icon` - numele iconului Material Design
+  - `etichete` - array de categorii/tags
 
-Publicările sunt adăugate automat prin sistemul de versioning. Datele sunt preluate din API-ul JSON `codlink=docup`.
+**Nu e nevoie de modificări în cod!** Sistemul preia automat datele actualizate.
+
+### Pentru publicări (funcționalitatea 4)
+
+Publicările sunt adăugate automat prin sistemul de versioning:
+
+- **Endpoint:** `https://asis.asw.ro/asisservice/linkuri?codlink=docup&reponsetype=json`
+- **Format:** Fiecare publicare conține:
+  - `versiune_publicata` - număr versiune (ex: 54439)
+  - `dataora` - timestamp publicare
+  - `tip` - "Standard" sau "Critic"
+  - `fisiere` - array cu fișierele modificate
+  - `rezumat` - text Markdown cu rezumatul AI
+
+Pagina `publicare.html` va fi accesibilă automat la URL-ul `?v=[versiune]`.
+
+### Configurare API endpoints
+
+Editează fișierul `cfg.json` pentru a schimba sursele de date:
+
+```json
+{
+  "urlDocu": "https://asis.asw.ro/asisservice/linkuri?codlink=docu&reponsetype=json",
+  "urlPubl": "https://asis.asw.ro/asisservice/linkuri?codlink=docup&reponsetype=json"
+}
+```
+
+## 🌐 SEO & Social Media
+
+### Web App Manifest
+
+Fișierul `assets/site.webmanifest` conține configurația pentru Progressive Web App (PWA):
+
+- Nume aplicație: "ASiSerp documentatii"
+- Nume scurt: "ASiSdocu"
+- Iconițe pentru dispozitive mobile (192x192 și 512x512)
+- Display mode: standalone (se deschide ca o aplicație nativă)
+
+### Meta Tags Open Graph & Twitter Cards
+
+Toate paginile includ meta tag-uri pentru:
+
+- **Open Graph (Facebook):** Permite preview-uri frumoase când link-urile sunt share-uite pe Facebook
+- **Twitter Cards:** Afișare optimizată pe Twitter cu thumbnail și descriere
+- **Thumbnail:** `/assets/thumbnail.png` - imagine folosită pentru preview social media
+
+Fiecare pagină HTML (`index.html`, `redir.html`, `publicare.html`, `404.html`) conține:
+
+```html
+<meta property="og:title" content="..." />
+<meta property="og:description" content="..." />
+<meta property="og:image" content="https://docu.asiserp.ro/assets/thumbnail.png" />
+<meta property="og:url" content="https://docu.asiserp.ro/..." />
+<meta name="twitter:card" content="summary_large_image" />
+```
 
 ## 🖼️ Interfața vizuală
 
@@ -92,12 +190,46 @@ Publicările sunt adăugate automat prin sistemul de versioning. Datele sunt pre
 
 ## 💡 De ce să-l folosești?
 
-- **Centralizare completă**: Atât documentația, cât și istoricul publicărilor într-un singur loc.
-- **Acces rapid**: Găsești instant orice documentație sau urmărești evoluția versiunilor.
-- **Inteligență artificială**: Rezumate automate ale publicărilor pentru înțelegere rapidă.
-- **Căutare avansată**: Poți căuta prin toate fișierele din toate versiunile simultan.
-- **Design modern**: Interfață profesională, responsivă și ușor de navigat.
-- **Expansibil**: Ușor de extins cu noi funcționalități și surse de date.
+- **4 funcționalități integrate:** Redirect scurt, viewer documentație, index centralizat și detalii publicări
+- **Centralizare completă:** Atât documentația, cât și istoricul publicărilor într-un singur loc
+- **Acces rapid:** Găsești instant orice documentație sau urmărești evoluția versiunilor
+- **Link-uri scurte:** Sistem de URL shortener pentru share rapid (`docu.asiserp.ro/accize`)
+- **Viewer integrat:** Vizualizezi documentele direct în site fără a părăsi interfața
+- **Detalii publicări:** Pagini dedicate pentru fiecare versiune cu informații complete
+- **Inteligență artificială:** Rezumate automate ale publicărilor pentru înțelegere rapidă
+- **Căutare avansată:** Poți căuta prin toate fișierele din toate versiunile simultan
+- **Design modern:** Interfață profesională, responsivă și ușor de navigat
+- **Expansibil:** Ușor de extins cu noi funcționalități și surse de date
+
+## 🔗 Exemple de utilizare
+
+### Link scurt pentru documentație
+
+```
+https://docu.asiserp.ro/accize
+→ redirecționează automat către documentul complet
+```
+
+### Vizualizare documentație în site
+
+```
+https://docu.asiserp.ro/redir.html?document_id=1234567890abc
+→ încarcă și afișează documentul în viewer-ul integrat
+```
+
+### Detalii publicare specifică
+
+```
+https://docu.asiserp.ro/publicare.html?v=54439
+→ afișează informații complete despre versiunea 54439
+```
+
+### Index principal
+
+```
+https://docu.asiserp.ro/
+→ acces la toate documentațiile și publicările (taburi)
+```
 
 ---
 
