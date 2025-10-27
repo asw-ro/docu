@@ -26,6 +26,82 @@ function switchTab(tab) {
 }
 window.switchTab = switchTab;
 
+// Check URL parameters on load
+function checkUrlParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tab = urlParams.get("tab");
+  const version = urlParams.get("version");
+
+  console.log("[checkUrlParams] tab:", tab, "version:", version);
+
+  if (tab === "publicatii") {
+    switchTab("publicatii");
+
+    // If version parameter exists, wait for publications to load then expand it
+    if (version) {
+      const expandVersion = () => {
+        setTimeout(() => {
+          console.log("[expandVersion] Looking for version:", version);
+          console.log(
+            "[expandVersion] Available publication versions:",
+            publicationsData.map(p => p.versiune_publicata)
+          );
+
+          // Try to find the card - handle both string and number comparisons
+          let versionCard = document.querySelector(`[data-version="${version}"]`);
+
+          if (!versionCard) {
+            // Try alternate selector in case version is stored as number
+            const allCards = document.querySelectorAll(".publication-card[data-version]");
+            console.log(
+              "[expandVersion] All cards with data-version:",
+              Array.from(allCards).map(c => c.getAttribute("data-version"))
+            );
+
+            // Find by comparing values (handles string vs number)
+            versionCard = Array.from(allCards).find(card => card.getAttribute("data-version") == version);
+          }
+
+          if (versionCard) {
+            console.log("[expandVersion] Found card for version:", version);
+            const expandBtn = versionCard.querySelector(".expand-btn");
+            if (expandBtn) {
+              // Simulate click to expand
+              expandBtn.click();
+              // Scroll to the card
+              versionCard.scrollIntoView({ behavior: "smooth", block: "start" });
+              // Highlight temporarily
+              versionCard.style.outline = "3px solid #1976d2";
+              setTimeout(() => {
+                versionCard.style.outline = "";
+              }, 2000);
+            }
+          } else {
+            console.warn("[expandVersion] Version not found:", version);
+          }
+        }, 500); // Wait for render
+      };
+
+      // If publications not loaded yet, wait for them
+      if (publicationsData.length === 0) {
+        console.log("[checkUrlParams] Waiting for publications to load...");
+        const checkLoaded = setInterval(() => {
+          if (publicationsData.length > 0) {
+            clearInterval(checkLoaded);
+            console.log("[checkUrlParams] Publications loaded, expanding version");
+            expandVersion();
+          }
+        }, 100);
+      } else {
+        expandVersion();
+      }
+    }
+  }
+}
+
+// Call on page load
+window.addEventListener("DOMContentLoaded", checkUrlParams);
+
 function renderTagFilters(tags) {
   const wrap = document.getElementById("tagFilters");
   if (!wrap) return;
@@ -219,6 +295,7 @@ function renderAllPublications(data, container) {
     const filesCount = pub.fisiere ? pub.fisiere.length : 0;
     const card = document.createElement("div");
     card.className = "publication-card vertical";
+    card.setAttribute("data-version", pub.versiune_publicata); // Add version attribute for URL targeting
     card.innerHTML = `<div class="publication-header vertical-header" tabindex="0">
         <div class="left-meta">
           <span class="material-icons">bookmark</span>
@@ -231,6 +308,9 @@ function renderAllPublications(data, container) {
         <div class="right-meta">
           <span class="material-icons">schedule</span>
           <span class="publication-date">${fDate}</span>
+          <button class="copy-version-link" data-version="${
+            pub.versiune_publicata
+          }" title="Copiază link către această versiune" aria-label="Copiază link"><span class="material-icons" style="font-size:1rem;">link</span></button>
           <button class="expand-btn" aria-label="Detalii versiune"><span class="material-icons">expand_more</span></button>
         </div>
         <div class="publication-summary-snippet" data-version="${pub.versiune_publicata}">
@@ -286,6 +366,34 @@ function renderAllPublications(data, container) {
         toggle();
       }
     });
+
+    // Handle copy version link button
+    const copyLinkBtn = card.querySelector(".copy-version-link");
+    if (copyLinkBtn) {
+      copyLinkBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        const version = pub.versiune_publicata;
+        const origin = window.location.origin;
+        // Use publicare.html for clean, shareable version URLs
+        const versionUrl = `${origin}/publicare.html?v=${version}`;
+
+        navigator.clipboard
+          .writeText(versionUrl)
+          .then(() => {
+            const originalHtml = copyLinkBtn.innerHTML;
+            copyLinkBtn.innerHTML = '<span class="material-icons" style="font-size:1rem;">check</span>';
+            copyLinkBtn.style.color = "#43a047";
+            setTimeout(() => {
+              copyLinkBtn.innerHTML = originalHtml;
+              copyLinkBtn.style.color = "";
+            }, 1500);
+          })
+          .catch(err => {
+            console.error("Failed to copy:", err);
+          });
+      });
+    }
+
     // Incarcam rezumatul (snippet) din campul "rezumat" al publicatiei
     const summaryEl = card.querySelector(".publication-summary-snippet");
     if (summaryEl) {
@@ -454,148 +562,26 @@ function escapeBasicMarkdownInline(text) {
     .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 
-// === Modal full markdown ===
+// === Navigation to publicare.html ===
 function attachSnippetEvents(container, publication) {
   const version = publication.versiune_publicata;
   const btn = container.querySelector(".snippet-full-btn");
   if (btn) {
     btn.addEventListener("click", e => {
       e.stopPropagation();
-      openMarkdownModal(version);
-    });
-  } else {
-    container.addEventListener("click", () => {
-      if (publicationFullMarkdownCache.has(version)) openMarkdownModal(version);
+      // Navigate to dedicated publication page
+      window.location.href = `publicare.html?v=${version}`;
     });
   }
 }
 
-function ensureMarkdownModal() {
-  let overlay = document.getElementById("markdownModalOverlay");
-  if (!overlay) {
-    overlay = document.createElement("div");
-    overlay.id = "markdownModalOverlay";
-    overlay.innerHTML = `<div class="md-modal" role="dialog" aria-modal="true" aria-labelledby="mdModalTitle">
-        <div class="md-modal-header">
-          <h2 id="mdModalTitle">Publicare</h2>
-          <div class="md-modal-actions">
-            <button type="button" class="md-close-btn" title="Închide" aria-label="Închide"><span class="material-icons">close</span></button>
-          </div>
-        </div>
-        <div class="md-modal-body"><div class="md-loading">Se încarcă...</div></div>
-      </div>`;
-    document.body.appendChild(overlay);
-    overlay.addEventListener("click", e => {
-      if (e.target === overlay) closeMarkdownModal();
-    });
-    overlay.querySelector(".md-close-btn").addEventListener("click", closeMarkdownModal);
-    window.addEventListener("keydown", e => {
-      if (e.key === "Escape" && overlay.style.display === "block") closeMarkdownModal();
-    });
-  }
-  return overlay;
-}
-
-function openMarkdownModal(version) {
-  const overlay = ensureMarkdownModal();
-  overlay.style.display = "block";
-  overlay.setAttribute("data-version", version);
-  const body = overlay.querySelector(".md-modal-body");
-  const title = overlay.querySelector("#mdModalTitle");
-  title.textContent = "Publicare v" + version;
-  if (publicationFullMarkdownCache.has(version)) {
-    body.innerHTML = renderFullMarkdown(publicationFullMarkdownCache.get(version));
-  } else {
-    body.innerHTML = '<div class="md-error">Nu este disponibil rezumatul complet pentru această versiune.</div>';
-  }
-}
-
-function closeMarkdownModal() {
-  const overlay = document.getElementById("markdownModalOverlay");
-  if (overlay) overlay.style.display = "none";
-}
-
-// Parser simplu pentru markdown (heading-uri, liste, code blocks, inline bold/italic/code)
-function renderFullMarkdown(md) {
-  if (!md) return '<div class="md-content"><p>(Gol)</p></div>';
-  const lines = md.split(/\r?\n/);
-  let html = "";
-  let inCode = false;
-  let listOpen = false;
-  const flushList = () => {
-    if (listOpen) {
-      html += "</ul>";
-      listOpen = false;
-    }
-  };
-  lines.forEach(rawLine => {
-    const line = rawLine; // keep as-is for code blocks
-    // Code fence
-    if (/^```/.test(line.trim())) {
-      if (!inCode) {
-        flushList();
-        inCode = true;
-        html += '<pre class="md-code">';
-      } else {
-        inCode = false;
-        html += "</pre>";
-      }
-      return;
-    }
-    if (inCode) {
-      html += line.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\n";
-      return;
-    }
-    // Headings
-    const h = line.match(/^(#{1,6})\s+(.*)$/);
-    if (h) {
-      flushList();
-      const level = h[1].length;
-      const content = h[2].trim();
-      html += `<h${level}>${escapeInline(content)}</h${level}>`;
-      return;
-    }
-    // List item
-    if (/^\s*[-*]\s+/.test(line)) {
-      if (!listOpen) {
-        flushList();
-        listOpen = true;
-        html += "<ul>";
-      }
-      const item = line.replace(/^\s*[-*]\s+/, "");
-      html += `<li>${escapeInline(item)}</li>`;
-      return;
-    } else {
-      flushList();
-    }
-    // Empty line
-    if (!line.trim()) {
-      return; // paragraph separation
-    }
-    // Paragraph
-    html += `<p>${escapeInline(line.trim())}</p>`;
-  });
-  flushList();
-  if (inCode) html += "</pre>";
-  return `<div class="md-content">${html}</div>`;
-}
-
-function escapeInline(text) {
+// ================= Utility functions for markdown rendering (used for snippets) =================
+function escapeBasicMarkdownInline(text) {
   return text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.*?)\*/g, "<em>$1</em>");
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
-
-// (A doua implementare veche a fost eliminată pentru a evita confuzii)
-
-document.addEventListener("click", e => {
-  const btn = e.target.closest(".snippet-full-btn");
-  if (btn) {
-    e.stopPropagation();
-    openMarkdownModal(btn.getAttribute("data-version"));
-  }
-});

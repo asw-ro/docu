@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publicare ASiSerp</title>
+    <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        max-width: initial;
+      }
+
+      .pub-view-bar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: #f6f8fa;
+        border-bottom: 1px solid #e3e8ee;
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .pub-back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1976d2;
+        background: #e3f2fd;
+        border: 1px solid #90caf9;
+        padding: 8px 14px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        box-shadow: 0 1px 2px rgba(25, 118, 210, 0.15);
+      }
+
+      .pub-back-btn:hover {
+        background: #d9ecfb;
+        transform: translateY(-1px);
+      }
+
+      .pub-title-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pub-title-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 500;
+        color: #333;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      .pub-version-badge {
+        background: #1976d2;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .pub-content-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px 20px;
+      }
+
+      .pub-loading {
+        text-align: center;
+        padding: 60px 20px;
+      }
+
+      .spinner {
+        margin: 0 auto 20px;
+        width: 50px;
+        height: 50px;
+        border: 6px solid #ccc;
+        border-top: 6px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .pub-error {
+        background: #ffebee;
+        color: #c62828;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px;
+        text-align: center;
+      }
+
+      .pub-metadata {
+        background: #f5f5f5;
+        border-left: 4px solid #1976d2;
+        padding: 16px 20px;
+        border-radius: 4px;
+        margin-bottom: 24px;
+      }
+
+      .pub-metadata-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 0;
+        color: #555;
+        font-size: 0.95rem;
+      }
+
+      .pub-metadata-row .material-icons {
+        font-size: 1.1rem;
+        color: #1976d2;
+      }
+
+      /* Markdown content styles */
+      .md-content {
+        background: #fff;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        line-height: 1.6;
+      }
+
+      .md-content h1,
+      .md-content h2,
+      .md-content h3,
+      .md-content h4,
+      .md-content h5,
+      .md-content h6 {
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        color: #222;
+      }
+
+      .md-content h1:first-child,
+      .md-content h2:first-child,
+      .md-content h3:first-child {
+        margin-top: 0;
+      }
+
+      .md-content h1 {
+        font-size: 1.8rem;
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 8px;
+      }
+      .md-content h2 {
+        font-size: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 6px;
+      }
+      .md-content h3 {
+        font-size: 1.3rem;
+      }
+      .md-content h4 {
+        font-size: 1.1rem;
+      }
+
+      .md-content p {
+        margin: 1em 0;
+        color: #333;
+      }
+
+      .md-content ul,
+      .md-content ol {
+        margin: 1em 0;
+        padding-left: 2em;
+      }
+
+      .md-content li {
+        margin: 0.5em 0;
+      }
+
+      .md-content code {
+        background: #f5f5f5;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: "Courier New", monospace;
+        font-size: 0.9em;
+        color: #c7254e;
+      }
+
+      .md-content pre {
+        background: #2d2d2d;
+        color: #f8f8f2;
+        padding: 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 1em 0;
+      }
+
+      .md-content pre code {
+        background: none;
+        color: inherit;
+        padding: 0;
+      }
+
+      .md-content strong {
+        font-weight: 600;
+        color: #222;
+      }
+
+      .md-content em {
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pub-view-bar">
+      <a href="/?tab=publicatii" class="pub-back-btn">
+        <span class="material-icons" style="font-size: 1.1rem">arrow_back</span>
+        <span>Înapoi</span>
+      </a>
+      <div class="pub-title-wrapper">
+        <div class="pub-title-chip">
+          <span class="material-icons">bookmark</span>
+          <span id="pubTitleText">Publicare</span>
+        </div>
+      </div>
+      <div style="width: 80px"></div>
+    </div>
+
+    <div id="pubContent" class="pub-content-wrapper">
+      <div class="pub-loading">
+        <div class="spinner"></div>
+        <div class="message">Se încarcă publicarea...</div>
+      </div>
+    </div>
+
+    <script>
+      // ========================================
+      // Configuration
+      // ========================================
+      let config = {
+        urlPubl: "https://asis.asw.ro/asisservice/linkuri?codlink=docup&reponsetype=json"
+      };
+
+      // Load config from cfg.json
+      fetch("cfg.json")
+        .then(r => (r.ok ? r.json() : {}))
+        .then(cfg => {
+          if (cfg.urlPubl) config.urlPubl = cfg.urlPubl;
+        })
+        .finally(loadPublication);
+
+      // ========================================
+      // Main Functions
+      // ========================================
+      function loadPublication() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let version = urlParams.get("v") || urlParams.get("version");
+
+        if (!version) {
+          showError("Nu a fost specificată nicio versiune. Folosiți ?v=54439");
+          return;
+        }
+
+        version = version.replace(/^v/i, "");
+
+        // Update page title
+        document.getElementById("pubTitleText").innerHTML = `<span class="pub-version-badge">v${version}</span>`;
+        document.title = `Publicare v${version} - ASiSerp`;
+
+        // Fetch and display publication
+        fetch(config.urlPubl, { headers: { Accept: "application/json" } })
+          .then(r => {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+          })
+          .then(data => {
+            const publications = data.publicari || [];
+            const pub = publications.find(p => String(p.versiune_publicata) === String(version));
+
+            if (!pub) {
+              showError(`Publicarea v${version} nu a fost găsită.`);
+              return;
+            }
+
+            renderPublication(pub);
+          })
+          .catch(e => {
+            console.error("Load error", e);
+            showError("Eroare la încărcarea datelor: " + e.message);
+          });
+      }
+
+      function renderPublication(pub) {
+        const container = document.getElementById("pubContent");
+
+        // Format date
+        let fDate = "Dată necunoscută";
+        if (pub.dataora) {
+          const d = new Date(pub.dataora);
+          if (!isNaN(d.getTime())) {
+            fDate = d.toLocaleDateString("ro-RO", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit"
+            });
+          }
+        }
+
+        const filesCount = pub.fisiere ? pub.fisiere.length : 0;
+
+        let html = `
+          <div class="pub-metadata">
+            <div class="pub-metadata-row">
+              <span class="material-icons">bookmark</span>
+              <strong>Versiune:</strong> v${pub.versiune_publicata}
+            </div>
+            <div class="pub-metadata-row">
+              <span class="material-icons">schedule</span>
+              <strong>Data publicării:</strong> ${fDate}
+            </div>
+            <div class="pub-metadata-row">
+              <span class="material-icons">label</span>
+              <strong>Tip:</strong> ${pub.tip || "Standard"}
+            </div>
+            <div class="pub-metadata-row">
+              <span class="material-icons">description</span>
+              <strong>Fișiere modificate:</strong> ${filesCount}
+            </div>
+          </div>
+        `;
+
+        if (pub.rezumat && pub.rezumat.trim()) {
+          html += renderFullMarkdown(pub.rezumat);
+        } else {
+          html += `<div class="pub-error">Nu există rezumat disponibil pentru această versiune.</div>`;
+        }
+
+        container.innerHTML = html;
+      }
+
+      function showError(message) {
+        document.getElementById("pubContent").innerHTML = `<div class="pub-error"><strong>Eroare:</strong> ${message}</div>`;
+      }
+
+      // ========================================
+      // Markdown Rendering
+      // ========================================
+      function renderFullMarkdown(md) {
+        if (!md) return '<div class="md-content"><p>(Gol)</p></div>';
+
+        const lines = md.split(/\r?\n/);
+        let html = "";
+        let inCode = false;
+        let listOpen = false;
+
+        const flushList = () => {
+          if (listOpen) {
+            html += "</ul>";
+            listOpen = false;
+          }
+        };
+
+        lines.forEach(line => {
+          // Code fence
+          if (/^```/.test(line.trim())) {
+            if (!inCode) {
+              flushList();
+              inCode = true;
+              html += '<pre class="md-code"><code>';
+            } else {
+              inCode = false;
+              html += "</code></pre>";
+            }
+            return;
+          }
+
+          // Code block content
+          if (inCode) {
+            html += line.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "\n";
+            return;
+          }
+
+          // Headings
+          const h = line.match(/^(#{1,6})\s+(.*)$/);
+          if (h) {
+            flushList();
+            const level = h[1].length;
+            const content = h[2].trim();
+            html += `<h${level}>${escapeInline(content)}</h${level}>`;
+            return;
+          }
+
+          // List items
+          if (/^\s*[-*]\s+/.test(line)) {
+            if (!listOpen) {
+              listOpen = true;
+              html += "<ul>";
+            }
+            const item = line.replace(/^\s*[-*]\s+/, "");
+            html += `<li>${escapeInline(item)}</li>`;
+            return;
+          }
+
+          flushList();
+
+          // Empty line
+          if (!line.trim()) return;
+
+          // Paragraph
+          html += `<p>${escapeInline(line.trim())}</p>`;
+        });
+
+        flushList();
+        if (inCode) html += "</code></pre>";
+
+        return `<div class="md-content">${html}</div>`;
+      }
+
+      function escapeInline(text) {
+        return text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/`([^`]+)`/g, "<code>$1</code>")
+          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+          .replace(/\*(.*?)\*/g, "<em>$1</em>");
+      }
+    </script>
+  </body>
+</html>

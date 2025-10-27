@@ -674,6 +674,23 @@ body {
 .publication-header.vertical-header .right-meta .material-icons {
   font-size: 1rem;
 }
+.publication-header .copy-version-link {
+  background: #1976d2;
+  border: 1px solid #1565c0;
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.publication-header .copy-version-link:hover {
+  background: #1565c0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
 .publication-header .expand-btn {
   background: #424242;
   border: 1px solid #616161;
