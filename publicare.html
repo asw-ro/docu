@@ -295,7 +295,10 @@
           <span id="pubTitleText">Publicare</span>
         </div>
       </div>
-      <div style="width: 80px"></div>
+      <button id="copyUrlBtn" class="pub-back-btn" style="cursor: pointer; border: 1px solid #90caf9">
+        <span class="material-icons" style="font-size: 1.1rem">content_copy</span>
+        <span>Copiază URL</span>
+      </button>
     </div>
 
     <div id="pubContent" class="pub-content-wrapper">
@@ -499,6 +502,32 @@
           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
           .replace(/\*(.*?)\*/g, "<em>$1</em>");
       }
+
+      // ========================================
+      // Copy URL functionality
+      // ========================================
+      document.getElementById("copyUrlBtn").addEventListener("click", function () {
+        const url = window.location.href;
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            const btn = this;
+            const originalText = btn.querySelector("span:last-child").textContent;
+            btn.querySelector("span:last-child").textContent = "✓ Copiat!";
+            btn.style.background = "#c8e6c9";
+            btn.style.borderColor = "#81c784";
+
+            setTimeout(() => {
+              btn.querySelector("span:last-child").textContent = originalText;
+              btn.style.background = "";
+              btn.style.borderColor = "";
+            }, 2000);
+          })
+          .catch(err => {
+            console.error("Failed to copy:", err);
+            alert("Nu s-a putut copia URL-ul");
+          });
+      });
     </script>
   </body>
 </html>

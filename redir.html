@@ -70,12 +70,68 @@
           <span class="doc-title-text">Se incarcă...</span>
         </div>
       </div>
-      <div style="width: 32px; height: 1px"></div>
+      <button id="copyUrlBtn" class="doc-back-btn" style="cursor: pointer; border: 1px solid #90caf9">
+        <span style="font-size: 1.05rem">📋</span>
+        <span>Copiază URL</span>
+      </button>
     </div>
     <div class="spinner-container">
       <div class="spinner"></div>
       <div class="message">Se încarcă conținutul...</div>
     </div>
     <!-- Content will be populated by google-doc-loader.js using the ?document_id=... query string -->
+    <script>
+      // Get the document ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const documentId = urlParams.get("document_id");
+      let shortUrl = null;
+
+      // Fetch the API to find the short URL for this document
+      if (documentId) {
+        fetch("https://asis.asw.ro/asisservice/linkuri?codlink=docu&reponsetype=json")
+          .then(r => r.json())
+          .then(data => {
+            // Find the entry that matches this document_id
+            const match = data.find(item => {
+              if (item.urlcomplet && item.urlcomplet.includes(documentId)) {
+                return true;
+              }
+              return false;
+            });
+
+            if (match && match.numescurt) {
+              // Build the short URL
+              shortUrl = window.location.origin + "/" + match.numescurt;
+            }
+          })
+          .catch(err => {
+            console.error("Failed to fetch short URL mapping:", err);
+          });
+      }
+
+      // Copy URL functionality - copies the short URL if available, otherwise the current URL
+      document.getElementById("copyUrlBtn").addEventListener("click", function () {
+        const urlToCopy = shortUrl || window.location.href;
+        navigator.clipboard
+          .writeText(urlToCopy)
+          .then(() => {
+            const btn = this;
+            const originalText = btn.querySelector("span:last-child").textContent;
+            btn.querySelector("span:last-child").textContent = "✓ Copiat!";
+            btn.style.background = "#c8e6c9";
+            btn.style.borderColor = "#81c784";
+
+            setTimeout(() => {
+              btn.querySelector("span:last-child").textContent = originalText;
+              btn.style.background = "";
+              btn.style.borderColor = "";
+            }, 2000);
+          })
+          .catch(err => {
+            console.error("Failed to copy:", err);
+            alert("Nu s-a putut copia URL-ul");
+          });
+      });
+    </script>
   </body>
 </html>
